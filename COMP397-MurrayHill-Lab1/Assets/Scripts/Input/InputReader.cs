@@ -3,10 +3,27 @@ using UnityEngine.InputSystem;
 
 public class InputReader : MonoBehaviour
 {
-    public Vector2 MoveInput { get; private set; }
+    public PlayerController playerController;
+    private PlayerInputActions inputActions;
 
-    public void OnMove(InputAction.CallbackContext context)
+    void Awake()
     {
-        MoveInput = context.ReadValue<Vector2>();
+        inputActions = new PlayerInputActions();
+    }
+
+    void OnEnable()
+    {
+        inputActions.Player.Enable();
+
+        inputActions.Player.Move.performed += ctx => playerController.SetMoveInput(ctx.ReadValue<Vector2>());
+        inputActions.Player.Move.canceled += ctx => playerController.SetMoveInput(Vector2.zero);
+
+        inputActions.Player.Look.performed += ctx => playerController.SetLookInput(ctx.ReadValue<Vector2>());
+        inputActions.Player.Look.canceled += ctx => playerController.SetLookInput(Vector2.zero);
+    }
+
+    void OnDisable()
+    {
+        inputActions.Player.Disable();
     }
 }
