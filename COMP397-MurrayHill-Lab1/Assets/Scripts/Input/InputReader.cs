@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 public class InputReader : MonoBehaviour
 {
     public PlayerController playerController;
+    public CameraManager cameraManager;
+
     private PlayerInputActions inputActions;
 
     void Awake()
@@ -15,11 +17,19 @@ public class InputReader : MonoBehaviour
     {
         inputActions.Player.Enable();
 
-        inputActions.Player.Move.performed += ctx => playerController.SetMoveInput(ctx.ReadValue<Vector2>());
-        inputActions.Player.Move.canceled += ctx => playerController.SetMoveInput(Vector2.zero);
+        // Movement
+        inputActions.Player.Move.performed += ctx =>
+            playerController.SetMoveInput(ctx.ReadValue<Vector2>());
 
-        inputActions.Player.Look.performed += ctx => playerController.SetLookInput(ctx.ReadValue<Vector2>());
-        inputActions.Player.Look.canceled += ctx => playerController.SetLookInput(Vector2.zero);
+        inputActions.Player.Move.canceled += ctx =>
+            playerController.SetMoveInput(Vector2.zero);
+
+        // Look (store input only — CameraManager rotates in Update)
+        inputActions.Player.Look.performed += ctx =>
+            cameraManager.SetLookInput(ctx.ReadValue<Vector2>());
+
+        inputActions.Player.Look.canceled += ctx =>
+            cameraManager.SetLookInput(Vector2.zero);
     }
 
     void OnDisable()
