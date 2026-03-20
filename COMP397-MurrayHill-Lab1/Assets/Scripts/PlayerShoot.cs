@@ -20,7 +20,7 @@ public class PlayerShoot : MonoBehaviour
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.velocity = shootPoint.forward * bulletSpeed;
+            rb.linearVelocity = shootPoint.forward * bulletSpeed;
             rb.WakeUp();
             rb.useGravity = false;
             rb.isKinematic = false;
