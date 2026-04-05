@@ -2,11 +2,13 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager instance;
-    public Transform player; // assign in inspector or use FindWithTag
+    public Transform player;
+
     private string savePath;
 
     private void Awake()
@@ -60,7 +62,8 @@ public class SaveManager : MonoBehaviour
 
     private IEnumerator DelayedLoad()
     {
-        yield return null; // wait one frame
+        yield return null;
+
         if (player == null)
         {
             player = GameObject.FindWithTag("Player")?.transform;
@@ -98,14 +101,13 @@ public class SaveManager : MonoBehaviour
 
         Debug.Log("Game Saved!");
         Debug.Log("Saved Position: X=" + data.posX + " Y=" + data.posY + " Z=" + data.posZ);
-        Debug.Log("Save file exists: " + File.Exists(savePath));
     }
 
     public void LoadGame()
     {
         if (!File.Exists(savePath))
         {
-            Debug.LogError("No save file found to load!");
+            Debug.LogError("No save file found!");
             return;
         }
 
@@ -125,9 +127,10 @@ public class SaveManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        // NEW INPUT SYSTEM (F key)
+        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         {
-            Debug.Log("F key pressed: attempting to save game...");
+            Debug.Log("F key pressed (Input System): saving game...");
             SaveGame();
         }
     }
